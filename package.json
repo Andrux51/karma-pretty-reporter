@@ -23,7 +23,7 @@
   "peerDependencies": {
     "karma": ">=0.10"
   },
-  "license": "ISC",
+  "license": "GPL 2.0",
   "bugs": {
     "url": "https://github.com/Andrux51/karma-pretty-reporter/issues"
   },

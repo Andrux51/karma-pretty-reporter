@@ -1,0 +1,31 @@
+{
+  "name": "karma-pretty-reporter",
+  "version": "0.1.0",
+  "description": "Pretty HTML report generator for Karma",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Andrux51/karma-pretty-reporter.git"
+  },
+  "keywords": [
+    "karma-plugin",
+    "karma-reporter",
+    "html",
+    "pretty"
+  ],
+  "author": "Andy Martin (https://github.com/Andrux51)",
+  "dependencies": {
+    "xmlbuilder": "2.4.4"
+  },
+  "peerDependencies": {
+    "karma": ">=0.10"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Andrux51/karma-pretty-reporter/issues"
+  },
+  "homepage": "https://github.com/Andrux51/karma-pretty-reporter#readme"
+}

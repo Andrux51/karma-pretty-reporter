@@ -7,7 +7,7 @@ var prettyReporter = function(baseReporterDecorator, config, logger, helper, for
     baseReporterDecorator(this);
 
     this.onRunStart = function(browsers) {
-        html = builder.create('html');
+        html = xmlbuilder.create('html');
         html.doctype();
     };
 

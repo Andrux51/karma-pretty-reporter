@@ -37,5 +37,5 @@ var prettyReporter = function(baseReporterDecorator, config, logger, helper, for
 prettyReporter.$inject = ['baseReporterDecorator', 'config', 'logger', 'helper', 'formatError'];
 
 module.exports = {
-    'reporter:pretty': ['type': prettyReporter]
+    'reporter:pretty': ['type', prettyReporter]
 }

@@ -16,7 +16,10 @@
     "html",
     "pretty"
   ],
-  "author": "Andy Martin (https://github.com/Andrux51)",
+  "author": {
+    "name": "Andy Martin",
+    "url": "https://github.com/Andrux51"
+  },
   "dependencies": {
     "xmlbuilder": "2.4.4"
   },
@@ -27,5 +30,11 @@
   "bugs": {
     "url": "https://github.com/Andrux51/karma-pretty-reporter/issues"
   },
-  "homepage": "https://github.com/Andrux51/karma-pretty-reporter#readme"
+  "homepage": "https://github.com/Andrux51/karma-pretty-reporter#readme",
+  "readme": "# Karma Pretty Reporter\r\n\r\nInspired by [karma-htmlfile-reporter](https://github.com/matthias-schuetz/karma-htmlfile-reporter)\r\n",
+  "readmeFilename": "README.md",
+  "gitHead": "f39070f58a286f8153cdaba0c9d1f0add53389c6",
+  "_id": "karma-pretty-reporter@0.2.2",
+  "_shasum": "cd234b3562f7a6b18bab043d1032725ff58fb5f7",
+  "_from": "karma-pretty-reporter@*"
 }

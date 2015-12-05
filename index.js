@@ -1,14 +1,14 @@
+'use strict';
 var path = require('path');
 var fs = require('fs');
 var xmlbuilder = require('xmlbuilder');
-var _ = require('lodash');
 
 var prettyReporter = function(baseReporterDecorator, config, logger, helper, formatError) {
     var outputFile = config.prettyReporter.outputFile || 'pretty-report.html';
     var pageTitle = config.prettyReporter.pageTitle || 'Karma Pretty Report';
     var html, body, container;
 
-    var describes, suites;
+    var suites, suiteNames;
 
     var karma = this;
 
@@ -26,43 +26,105 @@ var prettyReporter = function(baseReporterDecorator, config, logger, helper, for
         // NOTE: each browser is starting
         karma.write('[karma-pretty-reporter] Browser detected: ' + browser.name + '\r\n');
 
-        describes = [];
+        suiteNames = [];
+        suites = [];
     };
 
     this.onSpecComplete = function(browser, result) {
-        // NOTE: each test has finished
-        result.suite.forEach(function(suite) {
-            if(!describes.some(function(desc) {
-                return desc['h4'] === suite;
-            })) {
-                describes.push({
-                    'h4': suite,
-                    'ul': {
-                        'li': []
-                    }
-                });
-            }
-        });
+        // NOTE: a test has just finished
 
-        var describe = describes.filter(function(desc) {
-            return desc['h4'] === result.suite[result.suite.length - 1];
-        })[0];
+        var ind = suiteNames.indexOf(result.suite.join('|'));
+        if(ind === -1) {
+            suiteNames.push(result.suite.join('|'));
+            suites.push({
+                tree: result.suite,
+                name: result.suite[result.suite.length - 1],
+                tests: [result],
+                html: {},
+                success: 0,
+                failed: 0,
+                skipped: 0
+            });
+        } else {
+            suites[ind].tests.push(result);
+        }
 
-        describe['ul']['li'].push({
-            i: [
-                { '#text': '', '@class': 'fa fa-fw ' + (result.skipped ? 'fa-circle-thin' : result.success ? 'fa-check' : 'fa-close') }
-            ],
-            span: result.description
-        });
+        // describe.ul.push({
+        //     li: {
+        //         '@class': result.skipped ? 'text-warning' : result.success ? 'text-success' : 'text-danger',
+        //         'i': { '#text': '', '@class': 'fa fa-fw ' + (result.skipped ? 'fa-circle-thin' : result.success ? 'fa-check' : 'fa-close') },
+        //         'span': result.description
+        //     }
+        // });
 
         prettyAppCtrl += "console.log(\'"+JSON.stringify(result)+"\');";
     };
 
     this.onBrowserComplete = function(browser) {
         // NOTE: each browser has finished
-        describes.forEach(function(desc) {
-            if(desc.ul.li.length === 0) delete desc.ul;
-            container.ele(desc);
+        var htmlToWrite = {};
+
+        suites.forEach(function(suite) {
+            suite.tree.forEach(function(branch, i) {
+                var header = '';
+                switch(i) {
+                    case 0:
+                        header = 'h2';
+                        break;
+                    case 1:
+                        header = 'h3';
+                        break;
+                    default:
+                        header = 'h4';
+                        break;
+                }
+
+                if(branch === suite.name) {
+                    var testList = [];
+                    suite.tests.forEach(function(test) {
+                        if(test.skipped) {
+                            suite.skipped += 1;
+                        } else {
+                            suite.success += test.success ? 1 : 0;
+                            suite.failed += test.success ? 0 : 1;
+                        }
+
+                        testList.push({
+                            li: {
+                                '@class': test.skipped ? 'text-warning' : test.success ? 'text-success' : 'text-danger',
+                                'i': { '#text': '', '@class': 'fa fa-fw ' + (test.skipped ? 'fa-circle-thin' : test.success ? 'fa-check' : 'fa-close') },
+                                'span': '(' + test.time + 'ms) ' + test.description
+                            }
+                        });
+                    });
+
+                    suite.html[header] = {
+                        '@class': suite.skipped > 0 ? 'text-warning' : suite.failed > 0 ? 'text-danger' : 'text-success',
+                        '#text': branch + ' [' + suite.success + ' success | ' + suite.failed + ' fail | ' + suite.skipped + ' skip]'
+                    };
+                    suite.html.ul = testList;
+                } else {
+                    suite.html[header] = [];
+
+                }
+            });
+
+            container.ele(suite.html);
+
+            // var arr = [];
+            // suite.tree.forEach(function(branch, i) {
+            //     var arrObj = {
+            //         depth: i
+            //     };
+            //
+            //     var ind = Object.keys(suite.html).indexOf(header);
+            //     if(ind === -1) {
+            //         suite.html[header] = [{ '#text': branch, ul: [] }];
+            //     } else {
+            //         suite.html[header].push({ '#text': branch, ul });
+            //     }
+            //     arr.push(arrObj);
+            // });
         });
     };
 
